@@ -327,6 +327,7 @@ dependencies = [
  "opus",
  "rsmpeg",
  "steam-audio-codec",
+ "thiserror",
 ]
 
 [[package]]
