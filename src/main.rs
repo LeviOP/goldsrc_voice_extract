@@ -142,11 +142,12 @@ impl PlayerStream {
     }
 
     fn consume_samples(&mut self, sample_count: usize) -> impl Iterator<Item = u8> {
+        let bytes = sample_count * self.bytes_per_sample;
         let samples = self
             .decoded_samples
-            .drain(..sample_count.min(self.decoded_samples.len()));
+            .drain(..bytes.min(self.decoded_samples.len()));
         let padded_with_zeroes = samples.chain(core::iter::repeat(0));
-        padded_with_zeroes.take(sample_count)
+        padded_with_zeroes.take(bytes)
     }
 
     fn buffered_samples(&self) -> usize {
