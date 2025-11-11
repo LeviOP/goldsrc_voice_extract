@@ -11,6 +11,8 @@ const FRAME_SIZE: usize = 960;
 pub enum DecoderError {
     #[error("Insufficient data")]
     InsufficientData,
+    #[error("Insufficient output buffer")]
+    InsufficientOutputBuffer,
     #[error("Opus Error: {0}")]
     OpusError(#[from] opus::Error),
 }
@@ -95,7 +97,7 @@ impl SteamVoiceDecoder {
         &mut self,
         voice_data: SteamVoiceData,
         output_buffer: &mut [u8],
-    ) -> Result<usize, Box<dyn std::error::Error>> {
+    ) -> Result<usize, DecoderError> {
         let mut total = 0;
         for packet in voice_data.packets() {
             let packet = packet.expect("Coudln't read packet??");
@@ -109,7 +111,7 @@ impl SteamVoiceDecoder {
                     let size = self.decode_opus(opus.as_slice(), &mut output_buffer[total..])?;
                     total += size;
                     if total >= output_buffer.len() {
-                        return Err("InsufficientOutputBuffer".into());
+                        return Err(DecoderError::InsufficientOutputBuffer);
                     }
                 }
                 Packet::Silence(silence) => {

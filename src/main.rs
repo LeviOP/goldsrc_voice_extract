@@ -163,9 +163,9 @@ fn discover_players(
     bitrate: Option<i64>,
 ) {
     for entry in &demo.directory.entries {
-        if entry.type_ == 0 {
+        if entry.type_ == 0 { // nEntryType == DEMO_STARTUP
             continue;
-        } // nEntryType == DEMO_STARTUP
+        }
         for frame in &entry.frames {
             let FrameData::NetworkMessage(ref boxed_network_message) = frame.frame_data else {
                 continue;
@@ -247,9 +247,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut last_frame_time: Option<f32> = None;
 
     for entry in demo.directory.entries {
-        if entry.type_ == 0 {
+        if entry.type_ == 0 { // nEntryType == DEMO_STARTUP
             continue;
-        } // nEntryType == DEMO_STARTUP
+        }
 
         for demo_frame in entry.frames {
             'voice: {
